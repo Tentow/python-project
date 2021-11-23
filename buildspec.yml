@@ -7,16 +7,24 @@ phases:
       python: 3.7
   pre_build:
     commands:
-      - echo Test the python application.
-      - pip install -r requirements.txt
-      - pytest
+      - |
+        set -e
+        if [ "$BUILD_TYPE" = "UNITTEST" ]; then
+          - echo Test the python application.
+          - pip install -r requirements.txt
+          - flake8 app.py
+          - pytest
+        fi
   build:
     commands:
-      - echo Build the CSS using less.
-      - npm install -g less
-      - mkdir -p static/css
-      - lessc styles.less static/css/styles.css
-
+      - |
+        set -e
+        if [ "$BUILD_TYPE" = "BUILD" ]; then
+          - echo Build the CSS using less.
+          - npm install -g less
+          - mkdir -p static/css
+          - lessc styles.less static/css/styles.css
+        fi
 artifacts:
   files:
     - '**/*'
